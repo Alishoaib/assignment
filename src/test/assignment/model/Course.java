@@ -1,6 +1,5 @@
 package test.assignment.model;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -14,6 +13,9 @@ public class Course {
         daysMap = new LinkedHashMap<>();
         daysMap.put(CourseSchedule.DAYS.SATURDAY, new CourseSchedule[3]);
         daysMap.put(CourseSchedule.DAYS.SUNDAY, new CourseSchedule[3]);
+
+        courseFee = new CourseFee();
+        ranking = new Ranking();
     }
 
     public CourseFee getCourseFee() {
