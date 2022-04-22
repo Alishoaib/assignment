@@ -1,27 +1,30 @@
 package test.assignment;
 
 import test.assignment.model.Course;
-import test.assignment.model.CourseFee;
-import test.assignment.model.CourseSchedule;
+import test.assignment.model.CourseTotalFee;
+import test.assignment.model.CourseClass;
 import test.assignment.model.Ranking;
 
 import java.util.*;
 
-import static test.assignment.model.CourseSchedule.MAX_STUDENTS_IN_A_COURSE_SCHEDULE;
-import static test.assignment.model.CourseSchedule.TOTAL_WEEKENDS;
+import static test.assignment.model.CourseClass.MAX_STUDENTS_IN_A_COURSE_SCHEDULE;
+import static test.assignment.model.CourseClass.TOTAL_WEEKENDS;
 
 public class CourseScheduler {
     final Map<CourseName, Course[]> courses = new HashMap<>();
 
     public CourseScheduler() {
         for (CourseName courseName : CourseName.values()) {
+            //creating courses for 8 weekend (create array of course type size 8)
             Course[] totalCourses = new Course[TOTAL_WEEKENDS];
             for (int i = 0; i < totalCourses.length; i++) {
                 Course course = new Course();
-                for (CourseSchedule.DAYS day : course.getDaysMap().keySet()) {
-                    CourseSchedule[] courseDay = course.getDaysMap().get(day);
+                //3 classes for each course (for 2 days saturday and sunday)
+                for (CourseClass.DAYS day : course.getDaysMap().keySet()) {
+                    //this line return courseClass array of size 3 (Course line 14,15)
+                    CourseClass[] courseDay = course.getDaysMap().get(day);
                     for (int j = 0; j < 3; j++) {
-                        courseDay[j] = new CourseSchedule();
+                        courseDay[j] = new CourseClass();
                     }
                 }
 
@@ -38,13 +41,19 @@ public class CourseScheduler {
             // iterate on all 8 weeks
             for (Course courseSchedule : courseSchedules) {
                 // iterate on weekends days
-                for (CourseSchedule.DAYS weekend : CourseSchedule.DAYS.values()) {
+                for (CourseClass.DAYS weekend : CourseClass.DAYS.values()) {
                     //get course schedule on weekend days (SATURDAY, SUNDAY)
-                    CourseSchedule[] availableSchedules = courseSchedule.getDaysMap().get(weekend);
+                    CourseClass[] availableSchedules = courseSchedule.getDaysMap().get(weekend);
                     if (Objects.nonNull(availableSchedules)) {
                         // iterate on all schedules in 1 day, i.e. 3
-                        for (CourseSchedule scheduleOnWeekend : availableSchedules) {
+                        for (CourseClass scheduleOnWeekend : availableSchedules) {
                             if (scheduleOnWeekend.getStudentsEnrolled() < MAX_STUDENTS_IN_A_COURSE_SCHEDULE) {
+                                /**
+                                 * this method accept
+                                 * course name
+                                 * week no
+                                 * day
+                                 */
                                 enrollStudent(courseName, courseSchedule, scheduleOnWeekend);
                                 return true;
                             }
@@ -56,13 +65,13 @@ public class CourseScheduler {
         return false;
     }
 
-    private void enrollStudent(CourseName courseName, Course courseSchedule, CourseSchedule scheduleOnWeekend) {
+    private void enrollStudent(CourseName courseName, Course courseSchedule, CourseClass scheduleOnWeekend) {
         scheduleOnWeekend.setStudentsEnrolled(scheduleOnWeekend.getStudentsEnrolled() + 1);
 
-        CourseFee courseFee = courseSchedule.getCourseFee();
-        double totalFeePaidSoFar = courseFee.getTotalFee() + courseName.getFee();
-        courseFee.setTotalFee(totalFeePaidSoFar);
-        courseSchedule.setCourseFee(courseFee);
+        CourseTotalFee courseTotalFee = courseSchedule.getCourseFee();
+        double totalFeePaidSoFar = courseTotalFee.getTotalFee() + courseName.getFee();
+        courseTotalFee.setTotalFee(totalFeePaidSoFar);
+        courseSchedule.setCourseFee(courseTotalFee);
     }
 
     public CourseName maxEarningCourse() {
@@ -72,7 +81,7 @@ public class CourseScheduler {
             Course[] coursesWeeks = courses.get(courseName);
 
             double totalCourseFeeCollected = Arrays.stream(coursesWeeks).map(Course::getCourseFee)
-                    .mapToDouble(CourseFee::getTotalFee)
+                    .mapToDouble(CourseTotalFee::getTotalFee)
                     .sum();
 
             if (maxCourseFeeCollected == -1d || totalCourseFeeCollected > maxCourseFeeCollected) {
@@ -108,12 +117,13 @@ public class CourseScheduler {
     public void addRanking(CourseName courseName, int weekNumber, int ranking) {
         if (!courses.isEmpty() &&
                 weekNumber > 0 && // array numbering is 0 based, but we are giving an option to user to use 1 as starting index
-                courses.values().size() > weekNumber) {
+                courses.values().size() >= weekNumber) {
+            //get week no for ranking
             Course course = courses.get(courseName)[weekNumber - 1];
             // will not allow ranking for a scheduled course without students
             int totalStudentsInCourse = course.getDaysMap().values().stream()
                     .flatMap(Arrays::stream)
-                    .mapToInt(CourseSchedule::getStudentsEnrolled)
+                    .mapToInt(CourseClass::getStudentsEnrolled)
                     .sum();
 
             if (totalStudentsInCourse > 0) {
@@ -125,7 +135,7 @@ public class CourseScheduler {
 
     enum CourseName {
         YOGA(100d),
-        ZOMBA(100d),
+        ZOMBA(120d),
         AQUA_CISE(100d),
         BOX_FIT(100d),
         BODY_BLITZ(100d);

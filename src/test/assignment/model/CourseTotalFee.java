@@ -1,6 +1,6 @@
 package test.assignment.model;
 
-public class CourseFee {
+public class CourseTotalFee {
     public double totalFee;
 
     public double getTotalFee() {

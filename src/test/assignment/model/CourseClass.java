@@ -1,6 +1,6 @@
 package test.assignment.model;
 
-public class CourseSchedule {
+public class CourseClass {
 
     public final static int MAX_STUDENTS_IN_A_COURSE_SCHEDULE = 4;
     public final static int TOTAL_WEEKENDS = 8;

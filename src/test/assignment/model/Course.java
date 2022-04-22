@@ -4,26 +4,26 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Course {
-    CourseFee courseFee;
+    CourseTotalFee courseTotalFee;
     Ranking ranking;
 
-    final Map<CourseSchedule.DAYS, CourseSchedule[]> daysMap;
+    final Map<CourseClass.DAYS, CourseClass[]> daysMap;
 
     public Course() {
         daysMap = new LinkedHashMap<>();
-        daysMap.put(CourseSchedule.DAYS.SATURDAY, new CourseSchedule[3]);
-        daysMap.put(CourseSchedule.DAYS.SUNDAY, new CourseSchedule[3]);
+        daysMap.put(CourseClass.DAYS.SATURDAY, new CourseClass[3]);
+        daysMap.put(CourseClass.DAYS.SUNDAY, new CourseClass[3]);
 
-        courseFee = new CourseFee();
+        courseTotalFee = new CourseTotalFee();
         ranking = new Ranking();
     }
 
-    public CourseFee getCourseFee() {
-        return courseFee;
+    public CourseTotalFee getCourseFee() {
+        return courseTotalFee;
     }
 
-    public void setCourseFee(CourseFee courseFee) {
-        this.courseFee = courseFee;
+    public void setCourseFee(CourseTotalFee courseTotalFee) {
+        this.courseTotalFee = courseTotalFee;
     }
 
     public Ranking getRanking() {
@@ -34,7 +34,7 @@ public class Course {
         this.ranking = ranking;
     }
 
-    public Map<CourseSchedule.DAYS, CourseSchedule[]> getDaysMap() {
+    public Map<CourseClass.DAYS, CourseClass[]> getDaysMap() {
         return daysMap;
     }
 }
